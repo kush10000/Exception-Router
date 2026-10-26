@@ -1,0 +1,219 @@
+{
+  "_comment": "Mock TMS/WMS snapshot. 'today' is the simulation date: every date calculation in the tools uses it, so results are reproducible.",
+  "today": "2026-10-10",
+  "high_value_threshold_inr": 500000,
+
+  "customers": {
+    "CUST-ACME":  {"name": "Acme Retail",      "tier": "key_account"},
+    "CUST-BLOOM": {"name": "Bloom Pharma",     "tier": "key_account"},
+    "CUST-NOVA":  {"name": "Nova Electronics", "tier": "standard"},
+    "CUST-KIRAN": {"name": "Kiran Stores",     "tier": "standard"},
+    "CUST-ZEST":  {"name": "Zest Foods",       "tier": "standard"}
+  },
+
+  "orders": {
+    "ORD-3001": {"customer_id": "CUST-NOVA",  "value_inr": 80000,  "shipment_ids": ["SH-2001"]},
+    "ORD-3002": {"customer_id": "CUST-ACME",  "value_inr": 220000, "shipment_ids": ["SH-2002"]},
+    "ORD-3003": {"customer_id": "CUST-KIRAN", "value_inr": 45000,  "shipment_ids": ["SH-2003"]},
+    "ORD-3004": {"customer_id": "CUST-ZEST",  "value_inr": 60000,  "shipment_ids": ["SH-2004"]},
+    "ORD-3005": {"customer_id": "CUST-NOVA",  "value_inr": 750000, "shipment_ids": ["SH-2005"]},
+    "ORD-3010": {"customer_id": "CUST-KIRAN", "value_inr": 30000,  "shipment_ids": ["SH-2010"]},
+    "ORD-3011": {"customer_id": "CUST-NOVA",  "value_inr": 25000,  "shipment_ids": ["SH-2011"]},
+    "ORD-3012": {"customer_id": "CUST-ZEST",  "value_inr": 90000,  "shipment_ids": ["SH-2012"]},
+    "ORD-3013": {"customer_id": "CUST-ACME",  "value_inr": 150000, "shipment_ids": ["SH-2013"]},
+    "ORD-3014": {"customer_id": "CUST-BLOOM", "value_inr": 400000, "shipment_ids": ["SH-2014"]},
+    "ORD-3015": {"customer_id": "CUST-KIRAN", "value_inr": 40000,  "shipment_ids": ["SH-2015"]},
+    "ORD-3016": {"customer_id": "CUST-NOVA",  "value_inr": 120000, "shipment_ids": ["SH-2016"]},
+    "ORD-3017": {"customer_id": "CUST-ZEST",  "value_inr": 35000,  "shipment_ids": ["SH-2017"]},
+    "ORD-3018": {"customer_id": "CUST-ACME",  "value_inr": 260000, "shipment_ids": ["SH-2018"]},
+    "ORD-3019": {"customer_id": "CUST-NOVA",  "value_inr": 70000,  "shipment_ids": ["SH-2019"]},
+    "ORD-3020": {"customer_id": "CUST-ZEST",  "value_inr": 55000,  "shipment_ids": ["SH-2020"]}
+  },
+
+  "shipments": {
+    "SH-2001": {"order_id": "ORD-3001", "carrier": "BlueDart", "origin": "Mumbai", "destination": "Kolkata",
+      "status": "in_transit", "promised_date": "2026-10-05", "delivered_date": null,
+      "temperature_controlled": false, "address_verified": true,
+      "events": [
+        {"date": "2026-10-01", "location": "WH-MUM", "event": "Picked up"},
+        {"date": "2026-10-02", "location": "Mumbai hub", "event": "Departed"},
+        {"date": "2026-10-04", "location": "Nagpur hub", "event": "Arrived"}
+      ], "delivery_attempts": []},
+
+    "SH-2002": {"order_id": "ORD-3002", "carrier": "Delhivery", "origin": "Pune", "destination": "Hyderabad",
+      "status": "awaiting_pickup", "promised_date": "2026-10-06", "delivered_date": null,
+      "temperature_controlled": false, "address_verified": true,
+      "events": [
+        {"date": "2026-10-01", "location": "WH-PUNE", "event": "Shipping label created"},
+        {"date": "2026-10-03", "location": "WH-PUNE", "event": "Carrier arrived for pickup; consignment not ready (packing incomplete)"},
+        {"date": "2026-10-06", "location": "WH-PUNE", "event": "Carrier arrived for pickup; consignment not ready (packing incomplete)"}
+      ], "delivery_attempts": []},
+
+    "SH-2003": {"order_id": "ORD-3003", "carrier": "Delhivery", "origin": "Delhi", "destination": "Jaipur",
+      "status": "in_transit", "promised_date": "2026-10-12", "delivered_date": null,
+      "temperature_controlled": false, "address_verified": true,
+      "events": [
+        {"date": "2026-10-08", "location": "WH-DEL", "event": "Picked up"},
+        {"date": "2026-10-09", "location": "Jaipur hub", "event": "Arrived; out for delivery planned 2026-10-11"}
+      ], "delivery_attempts": []},
+
+    "SH-2004": {"order_id": "ORD-3004", "carrier": "Ecom Express", "origin": "Ahmedabad", "destination": "Bhopal",
+      "status": "in_transit", "promised_date": "2026-10-02", "delivered_date": null,
+      "temperature_controlled": false, "address_verified": true,
+      "events": [
+        {"date": "2026-09-29", "location": "WH-AMD", "event": "Picked up"},
+        {"date": "2026-09-30", "location": "Ahmedabad hub", "event": "Departed"},
+        {"date": "2026-10-01", "location": "Indore hub", "event": "Arrived"}
+      ], "delivery_attempts": []},
+
+    "SH-2005": {"order_id": "ORD-3005", "carrier": "BlueDart", "origin": "Mumbai", "destination": "Raipur",
+      "status": "in_transit", "promised_date": "2026-10-08", "delivered_date": null,
+      "temperature_controlled": false, "address_verified": true,
+      "events": [
+        {"date": "2026-10-03", "location": "WH-MUM", "event": "Picked up"},
+        {"date": "2026-10-05", "location": "Nagpur hub", "event": "Arrived"}
+      ], "delivery_attempts": []},
+
+    "SH-2010": {"order_id": "ORD-3010", "carrier": "Delhivery", "origin": "Delhi", "destination": "Gurugram",
+      "status": "delivery_failed", "promised_date": "2026-10-07", "delivered_date": null,
+      "temperature_controlled": false, "address_verified": true,
+      "events": [{"date": "2026-10-06", "location": "WH-DEL", "event": "Picked up"}],
+      "delivery_attempts": [
+        {"date": "2026-10-07", "outcome": "failed", "reason_code": "customer_unavailable", "note": "No one at premises"},
+        {"date": "2026-10-08", "outcome": "failed", "reason_code": "customer_unavailable", "note": "Phone not answered"},
+        {"date": "2026-10-09", "outcome": "failed", "reason_code": "premises_closed", "note": "Shop shutter down during delivery window"}
+      ]},
+
+    "SH-2011": {"order_id": "ORD-3011", "carrier": "Shadowfax", "origin": "Bengaluru", "destination": "Mysuru",
+      "status": "delivery_failed", "promised_date": "2026-10-09", "delivered_date": null,
+      "temperature_controlled": false, "address_verified": false,
+      "events": [{"date": "2026-10-07", "location": "WH-BLR", "event": "Picked up"}],
+      "delivery_attempts": [
+        {"date": "2026-10-08", "outcome": "failed", "reason_code": "address_not_found", "note": "Landmark incorrect, no building number"}
+      ]},
+
+    "SH-2012": {"order_id": "ORD-3012", "carrier": "ColdEx", "origin": "Ahmedabad", "destination": "Surat",
+      "status": "returned_to_hub", "promised_date": "2026-10-09", "delivered_date": null,
+      "temperature_controlled": true, "address_verified": true,
+      "events": [{"date": "2026-10-08", "location": "WH-AMD cold room", "event": "Picked up (frozen, -18C)"}],
+      "delivery_attempts": [
+        {"date": "2026-10-09", "outcome": "failed", "reason_code": "receiver_refused", "note": "Receiving dock full; receiver asked driver to come back next day"}
+      ]},
+
+    "SH-2013": {"order_id": "ORD-3013", "carrier": "BlueDart", "origin": "Pune", "destination": "Mumbai",
+      "status": "delivery_failed", "promised_date": "2026-10-10", "delivered_date": null,
+      "temperature_controlled": false, "address_verified": true,
+      "events": [{"date": "2026-10-08", "location": "WH-PUNE", "event": "Picked up"}],
+      "delivery_attempts": [
+        {"date": "2026-10-09", "outcome": "failed", "reason_code": "carrier_issue", "note": "Delivery vehicle breakdown en route"}
+      ]},
+
+    "SH-2014": {"order_id": "ORD-3014", "carrier": "BlueDart", "origin": "Hyderabad", "destination": "Chennai",
+      "status": "delivered", "promised_date": "2026-10-07", "delivered_date": "2026-10-07",
+      "temperature_controlled": false, "address_verified": true, "events": [], "delivery_attempts": []},
+
+    "SH-2015": {"order_id": "ORD-3015", "carrier": "Delhivery", "origin": "Delhi", "destination": "Lucknow",
+      "status": "delivered", "promised_date": "2026-10-06", "delivered_date": "2026-10-06",
+      "temperature_controlled": false, "address_verified": true, "events": [], "delivery_attempts": []},
+
+    "SH-2016": {"order_id": "ORD-3016", "carrier": "Ecom Express", "origin": "Mumbai", "destination": "Nashik",
+      "status": "delivered", "promised_date": "2026-10-08", "delivered_date": "2026-10-08",
+      "temperature_controlled": false, "address_verified": true, "events": [], "delivery_attempts": []},
+
+    "SH-2017": {"order_id": "ORD-3017", "carrier": "Delhivery", "origin": "Ahmedabad", "destination": "Vadodara",
+      "status": "delivered", "promised_date": "2026-10-07", "delivered_date": "2026-10-07",
+      "temperature_controlled": false, "address_verified": true, "events": [], "delivery_attempts": []},
+
+    "SH-2018": {"order_id": "ORD-3018", "carrier": "Ecom Express", "origin": "Ahmedabad", "destination": "Bhopal",
+      "status": "delivered", "promised_date": "2026-10-05", "delivered_date": "2026-10-08",
+      "temperature_controlled": false, "address_verified": true,
+      "events": [
+        {"date": "2026-10-02", "location": "WH-AMD", "event": "Picked up"},
+        {"date": "2026-10-03", "location": "Indore hub", "event": "Arrived"},
+        {"date": "2026-10-06", "location": "Indore hub", "event": "Departed"},
+        {"date": "2026-10-08", "location": "Bhopal", "event": "Delivered"}
+      ], "delivery_attempts": []},
+
+    "SH-2019": {"order_id": "ORD-3019", "carrier": "Shadowfax", "origin": "Pune", "destination": "Nagpur",
+      "status": "delivery_failed", "promised_date": "2026-10-08", "delivered_date": null,
+      "temperature_controlled": false, "address_verified": false,
+      "events": [{"date": "2026-10-05", "location": "WH-PUNE", "event": "Picked up"}],
+      "delivery_attempts": [
+        {"date": "2026-10-07", "outcome": "failed", "reason_code": "address_not_found", "note": "Building not found at given address"},
+        {"date": "2026-10-08", "outcome": "failed", "reason_code": "address_not_found", "note": "Customer phone switched off; address could not be located"}
+      ]},
+
+    "SH-2020": {"order_id": "ORD-3020", "carrier": "TCI Express", "origin": "Chennai", "destination": "Coimbatore",
+      "status": "in_transit", "promised_date": "2026-10-08", "delivered_date": null,
+      "temperature_controlled": false, "address_verified": true,
+      "events": [
+        {"date": "2026-10-05", "location": "WH-CHN", "event": "Picked up"},
+        {"date": "2026-10-06", "location": "Chennai hub", "event": "Held: linehaul suspended"}
+      ], "delivery_attempts": []}
+  },
+
+  "carriers": {
+    "BlueDart":     {"on_time_rate_30d": 0.91, "disruptions": [
+      {"hub": "Nagpur hub", "from": "2026-10-03", "to": "2026-10-11", "reason": "Flooding; hub operating at 30% capacity"}]},
+    "Delhivery":    {"on_time_rate_30d": 0.94, "disruptions": []},
+    "Ecom Express": {"on_time_rate_30d": 0.62, "disruptions": []},
+    "Shadowfax":    {"on_time_rate_30d": 0.88, "disruptions": []},
+    "ColdEx":       {"on_time_rate_30d": 0.95, "disruptions": []},
+    "TCI Express":  {"on_time_rate_30d": 0.90, "disruptions": [
+      {"hub": "Chennai hub", "from": "2026-10-06", "to": "2026-10-10", "reason": "Cyclone advisory; all linehaul suspended"}]}
+  },
+
+  "inventory": {
+    "SKU-LED-40@WH-PUNE": {"description": "40W LED panel", "system_qty": 200, "physical_qty": 188,
+      "last_cycle_count": {"date": "2026-09-30", "qty": 176, "matched_system": true},
+      "movements": [
+        {"date": "2026-10-03", "type": "receipt", "qty": 12, "ref": "GRN-551"},
+        {"date": "2026-10-03", "type": "receipt", "qty": 12, "ref": "GRN-551"}
+      ],
+      "notes": "Dock log for GRN-551: one pallet, 12 units received."},
+
+    "SKU-CBL-USB@WH-DEL": {"description": "USB-C cable 1m", "system_qty": 1000, "physical_qty": 990,
+      "last_cycle_count": {"date": "2026-10-01", "qty": 1000, "matched_system": true},
+      "movements": [
+        {"date": "2026-10-08", "type": "dispatch_scan", "qty": 10, "ref": "SO-889",
+         "comment": "Dispatch scan recorded at outbound dock; no pick confirmation posted in WMS"}
+      ],
+      "notes": ""},
+
+    "SKU-PHN-12@WH-BLR": {"description": "Smartphone model 12 (high-value cage)", "system_qty": 50, "physical_qty": 44,
+      "last_cycle_count": {"date": "2026-10-01", "qty": 50, "matched_system": true},
+      "movements": [],
+      "notes": "High-value cage. Access log: after-hours badge entry 2026-10-06 22:40 (contractor badge). No movement records since last count."},
+
+    "SKU-RICE-25@WH-DEL": {"description": "Rice 25kg bag", "system_qty": 500, "physical_qty": 480,
+      "last_cycle_count": {"date": "2026-10-01", "qty": 500, "matched_system": true},
+      "movements": [
+        {"date": "2026-10-07", "type": "damage_report", "qty": 20, "ref": "DR-77",
+         "comment": "20 bags water-damaged, moved to damage bay; write-off pending approval (not yet posted)"}
+      ],
+      "notes": ""}
+  },
+
+  "quality_inspections": {
+    "B-778": {"shipment_id": "SH-2014", "sku": "Sterile syringe 5ml", "supplier": "MedPack",
+      "inspected_units": 500, "defective_units": 3, "defect_type": "Seal integrity failure on sterile pouches",
+      "severity": "critical",
+      "notes": "Defect found inside sealed supplier cartons. Supplier certificate of analysis is missing the seal-strength test."},
+    "B-779": {"shipment_id": "SH-2015", "sku": "Plastic storage box 20L", "supplier": "ShinePlast",
+      "inspected_units": 200, "defective_units": 30, "defect_type": "Surface scratches",
+      "severity": "minor",
+      "notes": "Scratches are under the supplier's protective film, so they were present before packing."},
+    "B-780": {"shipment_id": "SH-2016", "sku": "TV wall mount", "supplier": "MountCo",
+      "inspected_units": 100, "defective_units": 4, "defect_type": "Crushed cartons, bent brackets",
+      "severity": "major",
+      "notes": "Origin QC photos show intact cartons at dispatch. Corner-crush pattern consistent with transit handling."},
+    "B-781": {"shipment_id": "SH-2017", "sku": "Glass jar 500ml", "supplier": "ClearGlass",
+      "inspected_units": 250, "defective_units": 2, "defect_type": "Chipped lids",
+      "severity": "minor",
+      "notes": "Chips located on lid moulding seams; manufacturing flaw."},
+    "B-782": {"shipment_id": "SH-2018", "sku": "Kitchen appliance cartons", "supplier": "HomeWare",
+      "inspected_units": 40, "defective_units": 18, "defect_type": "Crushed cartons",
+      "severity": "major",
+      "notes": "Origin QC passed with photos. Crush damage consistent with stacking during transit."}
+  }
+}

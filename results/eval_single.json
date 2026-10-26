@@ -1,0 +1,2076 @@
+{
+  "run_at": "2026-10-26T10:33:24",
+  "summary": {
+    "label": "single",
+    "n": 20,
+    "errors": 0,
+    "types": "100.0%",
+    "route": "  n/a",
+    "root_cause": "100.0%",
+    "escalate": "100.0%",
+    "consistent": "100.0%",
+    "all_correct": "100.0%",
+    "by_route": {
+      "single": {
+        "tickets": 20,
+        "all_correct": "100.0%",
+        "avg_api_calls": 3.8,
+        "avg_tokens": 12236,
+        "avg_seconds": 12.9
+      }
+    }
+  },
+  "rows": [
+    {
+      "ticket_id": "T01",
+      "expected": {
+        "exception_types": [
+          "late_shipment"
+        ],
+        "route": "single",
+        "root_causes": {
+          "late_shipment": "carrier_hub_disruption"
+        },
+        "escalate": false
+      },
+      "result": {
+        "ticket_id": "T01",
+        "triage": {
+          "exception_types": [
+            "late_shipment"
+          ],
+          "shipment_ids": [
+            "SH-2001"
+          ],
+          "order_ids": [],
+          "batch_ids": [],
+          "inventory_refs": [],
+          "summary": "Nova Electronics reports shipment SH-2001, due Oct 5, has not arrived and tracking hasn't updated in days."
+        },
+        "route": "single",
+        "rule_route": "single",
+        "route_reasons": [
+          "one exception type, standard/internal customer, order below threshold"
+        ],
+        "root_causes": {
+          "late_shipment": "carrier_hub_disruption"
+        },
+        "findings": [
+          {
+            "exception_type": "late_shipment",
+            "root_cause": "carrier_hub_disruption",
+            "evidence": "SH-2001 days_late=5; last event 2026-10-04 'Arrived' at Nagpur hub. BlueDart declared disruption at Nagpur hub 2026-10-03 to 2026-10-11: flooding, hub at 30% capacity.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": false,
+          "escalation_team": "none",
+          "priority": "none",
+          "policy_rules_applied": [
+            "Rule 3: escalate only if (days_late >= 3 AND key account) OR days_late >= 7. Here days_late=5 and tier=standard, so no escalation.",
+            "Rule 5: carrier disruption -> open a carrier trace. Freight waiver applies only to key accounts with days_late >= 3; customer is standard."
+          ],
+          "required_actions": [
+            "Open a carrier trace with BlueDart for SH-2001 at Nagpur hub",
+            "Monitor the shipment and re-check if days_late reaches 7 (escalation threshold for any customer)",
+            "Update the customer when tracking moves"
+          ]
+        },
+        "communications": {
+          "customer_message": "Hi Nova Electronics, thank you for flagging this. SH-2001 (promised Oct 5) is currently 5 days late. Its last scan was on Oct 4 at BlueDart's Nagpur hub, which has a declared network disruption from flooding, with the hub operating at 30% capacity. This explains why tracking hasn't moved. We are opening a trace with BlueDart and will keep monitoring the shipment. We'll update you as soon as it moves. We can't give a firm new delivery date yet, because the carrier hasn't provided one. We apologise for the delay.",
+          "internal_note": "SH-2001 (ORD-3001, standard, INR 80,000) stuck at Nagpur hub since Oct 4 due to BlueDart flood disruption (Oct 3-11). days_late=5, below the escalation threshold for a standard customer. Carrier trace to be opened. Re-evaluate if it reaches days_late 7.",
+          "escalation_id": ""
+        },
+        "escalations_filed": 0,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 4,
+          "tool_calls": 3,
+          "tool_errors": 0,
+          "input_tokens": 11531,
+          "output_tokens": 1304,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 3.49,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 3,
+              "seconds": 10.5,
+              "tools": [
+                "get_shipment",
+                "lookup_policy",
+                "get_carrier_status"
+              ]
+            }
+          ],
+          "seconds": 14.0
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T02",
+      "expected": {
+        "exception_types": [
+          "late_shipment"
+        ],
+        "route": "multi",
+        "root_causes": {
+          "late_shipment": "warehouse_dispatch_delay"
+        },
+        "escalate": true
+      },
+      "result": {
+        "ticket_id": "T02",
+        "triage": {
+          "exception_types": [
+            "late_shipment"
+          ],
+          "shipment_ids": [
+            "SH-2002"
+          ],
+          "order_ids": [],
+          "batch_ids": [],
+          "inventory_refs": [],
+          "summary": "Key account Acme Retail reports shipment SH-2002 to its Hyderabad store is still 'awaiting pickup' after the promised date of the 6th, the third delay this quarter."
+        },
+        "route": "single",
+        "rule_route": "multi",
+        "route_reasons": [
+          "key account (Acme Retail)"
+        ],
+        "root_causes": {
+          "late_shipment": "warehouse_dispatch_delay"
+        },
+        "findings": [
+          {
+            "exception_type": "late_shipment",
+            "root_cause": "warehouse_dispatch_delay",
+            "evidence": "SH-2002 status awaiting_pickup, days_late 4. Delhivery arrived at WH-PUNE on 2026-10-03 and 2026-10-06 and the consignment was not ready (packing incomplete). The shipment never left our warehouse.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": true,
+          "escalation_team": "logistics",
+          "priority": "P1",
+          "policy_rules_applied": [
+            "Escalate to logistics when (days_late >= 3 AND key account) OR days_late >= 7: days_late = 4 and Acme Retail is a key_account.",
+            "Priority P1 for key accounts.",
+            "Warehouse dispatch delay -> expedite packing and rebook pickup; key account with days_late >= 3 -> waive freight charges."
+          ],
+          "required_actions": [
+            "Expedite packing of SH-2002 at WH-PUNE",
+            "Rebook Delhivery pickup",
+            "Waive freight charges for the key account",
+            "Logistics to follow up via ESC-570B1E"
+          ]
+        },
+        "communications": {
+          "customer_message": "Dear Acme Retail team, we apologise for the delay on SH-2002 to your Hyderabad store. It is 4 days late. The cause was on our side: the consignment was not fully packed when the carrier came to collect it from our Pune warehouse on 3 and 6 October, so it has not yet left. We have escalated this as a priority to our logistics team. Next steps: we are expediting packing and rebooking the carrier pickup, and we are waiving the freight charges for this shipment. We will send you the updated pickup and delivery details once the pickup is confirmed.",
+          "internal_note": "Warehouse-caused delay at WH-PUNE: two failed pickup attempts (10/03, 10/06), packing incomplete. Key account, order value INR 220000, customer reports it is the third delay this quarter, so a review of the Pune packing process is worth considering. Escalated P1 to logistics as ESC-570B1E.",
+          "escalation_id": "ESC-570B1E"
+        },
+        "escalations_filed": 1,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 4,
+          "tool_calls": 3,
+          "tool_errors": 0,
+          "input_tokens": 11876,
+          "output_tokens": 1530,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 3.04,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 3,
+              "seconds": 9.49,
+              "tools": [
+                "get_shipment",
+                "lookup_policy",
+                "create_escalation"
+              ]
+            }
+          ],
+          "seconds": 12.54
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T03",
+      "expected": {
+        "exception_types": [
+          "late_shipment"
+        ],
+        "route": "single",
+        "root_causes": {
+          "late_shipment": "not_late"
+        },
+        "escalate": false
+      },
+      "result": {
+        "ticket_id": "T03",
+        "triage": {
+          "exception_types": [
+            "late_shipment"
+          ],
+          "shipment_ids": [
+            "SH-2003"
+          ],
+          "order_ids": [],
+          "batch_ids": [],
+          "inventory_refs": [],
+          "summary": "Customer Kiran Stores asks whether shipment SH-2003, which tracking shows sitting in Jaipur, will be late."
+        },
+        "route": "single",
+        "rule_route": "single",
+        "route_reasons": [
+          "one exception type, standard/internal customer, order below threshold"
+        ],
+        "root_causes": {
+          "late_shipment": "not_late"
+        },
+        "findings": [
+          {
+            "exception_type": "late_shipment",
+            "root_cause": "not_late",
+            "evidence": "get_shipment: days_late=0, is_late=false, promised 2026-10-12, status in_transit; arrived Jaipur hub 2026-10-09, out for delivery planned 2026-10-11.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": false,
+          "escalation_team": "none",
+          "priority": "none",
+          "policy_rules_applied": [
+            "Rule 1: days_late == 0 means the shipment is NOT late; reply with current status and expected delivery; root cause 'not_late'.",
+            "Rule 3: escalate only if (days_late >= 3 AND key account) OR days_late >= 7; days_late is 0 and the customer is standard, so no escalation."
+          ],
+          "required_actions": [
+            "Reply to customer with current status and expected delivery",
+            "No escalation or carrier trace needed"
+          ]
+        },
+        "communications": {
+          "customer_message": "Hi Kiran Stores, SH-2003 is not late. It reached the Jaipur hub on 2026-10-09, which is its destination city, so it is waiting there before the final delivery leg. Out for delivery is planned for 2026-10-11, and the promised delivery date is 2026-10-12. We will keep monitoring it. If it hasn't moved as planned, we will follow up with the carrier.",
+          "internal_note": "SH-2003 (Delhivery, Delhi->Jaipur) is on track. days_late=0 and it is at the destination hub with out-for-delivery planned 2026-10-11. Promised date is 2026-10-12. No escalation.",
+          "escalation_id": ""
+        },
+        "escalations_filed": 0,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 3,
+          "tool_calls": 2,
+          "tool_errors": 0,
+          "input_tokens": 7506,
+          "output_tokens": 1039,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 2.73,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 2,
+              "seconds": 6.14,
+              "tools": [
+                "get_shipment",
+                "lookup_policy"
+              ]
+            }
+          ],
+          "seconds": 8.87
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T04",
+      "expected": {
+        "exception_types": [
+          "late_shipment"
+        ],
+        "route": "single",
+        "root_causes": {
+          "late_shipment": "carrier_delay"
+        },
+        "escalate": true
+      },
+      "result": {
+        "ticket_id": "T04",
+        "triage": {
+          "exception_types": [
+            "late_shipment"
+          ],
+          "shipment_ids": [
+            "SH-2004"
+          ],
+          "order_ids": [],
+          "batch_ids": [],
+          "inventory_refs": [],
+          "summary": "Zest Foods reports shipment SH-2004, due 2nd Oct, is more than a week overdue and the carrier (Ecom Express) is not responding."
+        },
+        "route": "single",
+        "rule_route": "single",
+        "route_reasons": [
+          "one exception type, standard/internal customer, order below threshold"
+        ],
+        "root_causes": {
+          "late_shipment": "carrier_delay"
+        },
+        "findings": [
+          {
+            "exception_type": "late_shipment",
+            "root_cause": "carrier_delay",
+            "evidence": "get_shipment: days_late=8, status in_transit, promised 2026-10-02, last event 2026-10-01 arrived at Indore hub, no scans since. get_carrier_status: Ecom Express has no declared disruptions, 30-day on-time rate 0.62.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": true,
+          "escalation_team": "logistics",
+          "priority": "P2",
+          "policy_rules_applied": [
+            "Late shipment policy rule 3: escalate to logistics when days_late >= 7 for any customer (days_late = 8).",
+            "Rule 4: P2 for non-key accounts (Zest Foods is standard tier).",
+            "Rule 2: stuck in carrier network with no declared disruption = carrier_delay.",
+            "Rule 5: carrier delay -> open a carrier trace. Freight waiver does not apply (not a key account)."
+          ],
+          "required_actions": [
+            "Open a carrier trace with Ecom Express for SH-2004 (last scan Indore hub, 2026-10-01)",
+            "Logistics to obtain a confirmed delivery ETA and update the customer"
+          ]
+        },
+        "communications": {
+          "customer_message": "Hello Zest Foods, thank you for flagging this. SH-2004 was promised for 2 Oct and is currently 8 days late. Our records show it is still in transit with Ecom Express. Its last scan was its arrival at the Indore hub on 1 Oct, and there have been no scans since. We have escalated this to our logistics team (reference ESC-209EC3). They will open a trace with Ecom Express and deal with the carrier directly, so you don't need to chase them. We will update you as soon as we have a confirmed delivery date. We apologise for the delay.",
+          "internal_note": "SH-2004 is 8 days late and stuck since the Indore hub arrival on 2026-10-01. Ecom Express has no declared disruption and a 0.62 on-time rate. Escalated to logistics as P2 (ESC-209EC3) under the days_late >= 7 rule. The customer is standard tier, so no freight waiver. No delivery date was promised to the customer.",
+          "escalation_id": "ESC-209EC3"
+        },
+        "escalations_filed": 1,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 4,
+          "tool_calls": 4,
+          "tool_errors": 0,
+          "input_tokens": 11924,
+          "output_tokens": 1633,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 3.49,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 3,
+              "seconds": 14.27,
+              "tools": [
+                "get_shipment",
+                "lookup_policy",
+                "get_carrier_status",
+                "create_escalation"
+              ]
+            }
+          ],
+          "seconds": 17.77
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T05",
+      "expected": {
+        "exception_types": [
+          "late_shipment"
+        ],
+        "route": "multi",
+        "root_causes": {
+          "late_shipment": "carrier_hub_disruption"
+        },
+        "escalate": false
+      },
+      "result": {
+        "ticket_id": "T05",
+        "triage": {
+          "exception_types": [
+            "late_shipment"
+          ],
+          "shipment_ids": [
+            "SH-2005"
+          ],
+          "order_ids": [],
+          "batch_ids": [],
+          "inventory_refs": [],
+          "summary": "Nova Electronics reports shipment SH-2005, their big festive-season order, is 2 days past its promised delivery date and asks for it to be monitored."
+        },
+        "route": "single",
+        "rule_route": "multi",
+        "route_reasons": [
+          "high-value order (INR 750,000 >= 500,000)"
+        ],
+        "root_causes": {
+          "late_shipment": "carrier_hub_disruption"
+        },
+        "findings": [
+          {
+            "exception_type": "late_shipment",
+            "root_cause": "carrier_hub_disruption",
+            "evidence": "SH-2005 days_late=2, last event 2026-10-05 arrived at Nagpur hub. BlueDart has a declared disruption at Nagpur hub 2026-10-03 to 2026-10-11: flooding, hub at 30% capacity.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": false,
+          "escalation_team": "none",
+          "priority": "none",
+          "policy_rules_applied": [
+            "Rule 3: escalate only if (days_late >= 3 AND key account) OR days_late >= 7. Here days_late=2 and tier=standard, so no escalation.",
+            "Rule 5: carrier delay or disruption -> open a carrier trace."
+          ],
+          "required_actions": [
+            "Open a carrier trace with BlueDart for SH-2005 at Nagpur hub",
+            "Monitor shipment for the next scan event out of Nagpur hub",
+            "Update Nova Electronics when the shipment moves"
+          ]
+        },
+        "communications": {
+          "customer_message": "Dear Nova Electronics team, thank you for flagging SH-2005. The shipment is currently 2 days past its promised date of 2026-10-08. It reached BlueDart's Nagpur hub on 2026-10-05 and has been held there because the hub is affected by flooding and is running at reduced capacity (BlueDart has declared this disruption). We are opening a trace with BlueDart and will monitor the shipment closely given the importance of this festive-season order. We will update you as soon as it moves on from Nagpur. We can't confirm a new delivery date yet, as the carrier hasn't given one. We apologise for the delay.",
+          "internal_note": "SH-2005 (ORD-3005, INR 750000, standard tier) stuck at Nagpur hub since 2026-10-05; BlueDart declared flooding disruption there (to 2026-10-11). days_late=2, standard, so below escalation threshold. Carrier trace to be opened and shipment monitored. Re-evaluate if days_late reaches 7.",
+          "escalation_id": ""
+        },
+        "escalations_filed": 0,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 4,
+          "tool_calls": 3,
+          "tool_errors": 0,
+          "input_tokens": 11410,
+          "output_tokens": 1305,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 2.85,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 3,
+              "seconds": 8.66,
+              "tools": [
+                "get_shipment",
+                "lookup_policy",
+                "get_carrier_status"
+              ]
+            }
+          ],
+          "seconds": 11.51
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T06",
+      "expected": {
+        "exception_types": [
+          "inventory_mismatch"
+        ],
+        "route": "single",
+        "root_causes": {
+          "inventory_mismatch": "duplicate_posting"
+        },
+        "escalate": true
+      },
+      "result": {
+        "ticket_id": "T06",
+        "triage": {
+          "exception_types": [
+            "inventory_mismatch"
+          ],
+          "shipment_ids": [],
+          "order_ids": [],
+          "batch_ids": [],
+          "inventory_refs": [
+            {
+              "sku": "SKU-LED-40",
+              "warehouse": "WH-PUNE"
+            }
+          ],
+          "summary": "Cycle count at WH-PUNE shows SKU-LED-40 physical stock of 188 versus 200 in the system, a shortfall of 12 units that needs investigation."
+        },
+        "route": "single",
+        "rule_route": "single",
+        "route_reasons": [
+          "one exception type, standard/internal customer, order below threshold"
+        ],
+        "root_causes": {
+          "inventory_mismatch": "duplicate_posting"
+        },
+        "findings": [
+          {
+            "exception_type": "inventory_mismatch",
+            "root_cause": "duplicate_posting",
+            "evidence": "Two identical receipt movements of 12 units for ref GRN-551 on 2026-10-03; dock log says one pallet, 12 units received. Variance -12 units (-6.0%). Last cycle count 2026-09-30 matched system.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": true,
+          "escalation_team": "warehouse_ops",
+          "priority": "P2",
+          "policy_rules_applied": [
+            "ESCALATE to warehouse_ops when abs(variance_pct) >= 5: variance_pct is -6.0, so escalate.",
+            "Priority: P1 if theft or loss suspected, otherwise P2: root cause is duplicate_posting, so P2."
+          ],
+          "required_actions": [
+            "Reverse the duplicate GRN-551 entry (12 units) in the system",
+            " Recount SKU-LED-40 at WH-PUNE after reversal to confirm system matches physical (188)"
+          ]
+        },
+        "communications": {
+          "customer_message": "",
+          "internal_note": "SKU-LED-40 at WH-PUNE: GRN-551 was posted twice (12 units each) on 2026-10-03, but only one pallet of 12 was received. This explains the full -12 variance (-6.0%). Escalated to warehouse_ops as P2 (ESC-EE5813) to reverse the duplicate.",
+          "escalation_id": "ESC-EE5813"
+        },
+        "escalations_filed": 1,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 4,
+          "tool_calls": 3,
+          "tool_errors": 0,
+          "input_tokens": 10625,
+          "output_tokens": 1360,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 9.11,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 3,
+              "seconds": 8.49,
+              "tools": [
+                "get_inventory",
+                "lookup_policy",
+                "create_escalation"
+              ]
+            }
+          ],
+          "seconds": 17.6
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T07",
+      "expected": {
+        "exception_types": [
+          "inventory_mismatch"
+        ],
+        "route": "single",
+        "root_causes": {
+          "inventory_mismatch": "unrecorded_pick"
+        },
+        "escalate": false
+      },
+      "result": {
+        "ticket_id": "T07",
+        "triage": {
+          "exception_types": [
+            "inventory_mismatch"
+          ],
+          "shipment_ids": [],
+          "order_ids": [],
+          "batch_ids": [],
+          "inventory_refs": [
+            {
+              "sku": "SKU-CBL-USB",
+              "warehouse": "WH-DEL"
+            }
+          ],
+          "summary": "Cycle count at WH-DEL shows 990 physical units of SKU-CBL-USB versus 1000 in the system, a 10-unit variance."
+        },
+        "route": "single",
+        "rule_route": "single",
+        "route_reasons": [
+          "one exception type, standard/internal customer, order below threshold"
+        ],
+        "root_causes": {
+          "inventory_mismatch": "unrecorded_pick"
+        },
+        "findings": [
+          {
+            "exception_type": "inventory_mismatch",
+            "root_cause": "unrecorded_pick",
+            "evidence": "Variance -10 units (-1.0%). Movement on 2026-10-08: dispatch scan of 10 units for SO-889 at outbound dock with no pick confirmation posted in WMS. Last cycle count 2026-10-01 matched system (1000).",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": false,
+          "escalation_team": "none",
+          "priority": "none",
+          "policy_rules_applied": [
+            "Rule 3: escalate to warehouse_ops only when abs(variance_pct) >= 5; variance_pct is -1.0, so no escalation.",
+            "Rule 2: 'unrecorded_pick' applies because goods were dispatched without a pick confirmation."
+          ],
+          "required_actions": [
+            "Post the missing pick confirmation for SO-889 (10 units) in the WMS.",
+            "Confirm system quantity then matches the physical count of 990."
+          ]
+        },
+        "communications": {
+          "customer_message": "",
+          "internal_note": "WH-DEL SKU-CBL-USB: 10-unit (-1.0%) variance explained by the 2026-10-08 dispatch scan for SO-889 with no WMS pick confirmation. Below the 5% escalation threshold, so no escalation. Post the missing pick confirmation to correct the system quantity.",
+          "escalation_id": ""
+        },
+        "escalations_filed": 0,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 3,
+          "tool_calls": 2,
+          "tool_errors": 0,
+          "input_tokens": 6858,
+          "output_tokens": 1055,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 9.07,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 2,
+              "seconds": 5.83,
+              "tools": [
+                "get_inventory",
+                "lookup_policy"
+              ]
+            }
+          ],
+          "seconds": 14.9
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T08",
+      "expected": {
+        "exception_types": [
+          "inventory_mismatch"
+        ],
+        "route": "single",
+        "root_causes": {
+          "inventory_mismatch": "theft_or_loss_suspected"
+        },
+        "escalate": true
+      },
+      "result": {
+        "ticket_id": "T08",
+        "triage": {
+          "exception_types": [
+            "inventory_mismatch"
+          ],
+          "shipment_ids": [],
+          "order_ids": [],
+          "batch_ids": [],
+          "inventory_refs": [
+            {
+              "sku": "SKU-PHN-12",
+              "warehouse": "WH-BLR"
+            }
+          ],
+          "summary": "SKU-PHN-12 at WH-BLR is physically 6 units short of system stock despite a clean cage count on Oct 1."
+        },
+        "route": "single",
+        "rule_route": "single",
+        "route_reasons": [
+          "one exception type, standard/internal customer, order below threshold"
+        ],
+        "root_causes": {
+          "inventory_mismatch": "theft_or_loss_suspected"
+        },
+        "findings": [
+          {
+            "exception_type": "inventory_mismatch",
+            "root_cause": "theft_or_loss_suspected",
+            "evidence": "system_qty 50 vs physical_qty 44 (variance -6 units, -12.0%). Cycle count on 2026-10-01 matched system (50). Movements list empty, so no record explains the variance. Access log shows after-hours contractor badge entry on 2026-10-06 22:40.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": true,
+          "escalation_team": "warehouse_ops",
+          "priority": "P1",
+          "policy_rules_applied": [
+            "ESCALATE to warehouse_ops when abs(variance_pct) >= 5: variance_pct is -12.0, so escalate.",
+            "Priority: P1 if theft or loss is suspected: no movement record explains the 6-unit variance, so P1.",
+            "theft_or_loss_suspected -> freeze the location, recount, and refer to loss prevention."
+          ],
+          "required_actions": [
+            "Freeze the high-value cage location for SKU-PHN-12 at WH-BLR",
+            "Recount SKU-PHN-12",
+            "Refer to loss prevention, including the 2026-10-06 22:40 after-hours contractor badge entry in the access log"
+          ]
+        },
+        "communications": {
+          "customer_message": "",
+          "internal_note": "SKU-PHN-12 at WH-BLR is 6 units short (-12.0%). The cage count matched on Oct 1 and there are no movements since. An after-hours contractor badge entry was logged on Oct 6 at 22:40. Suspected theft or loss. Filed P1 escalation ESC-6DBD42 to warehouse_ops. The access log is a lead for loss prevention to follow up, not a conclusion about who is responsible.",
+          "escalation_id": "ESC-6DBD42"
+        },
+        "escalations_filed": 1,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 4,
+          "tool_calls": 3,
+          "tool_errors": 0,
+          "input_tokens": 10465,
+          "output_tokens": 1436,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 2.01,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 3,
+              "seconds": 8.34,
+              "tools": [
+                "get_inventory",
+                "lookup_policy",
+                "create_escalation"
+              ]
+            }
+          ],
+          "seconds": 10.35
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T09",
+      "expected": {
+        "exception_types": [
+          "inventory_mismatch"
+        ],
+        "route": "single",
+        "root_causes": {
+          "inventory_mismatch": "damaged_not_written_off"
+        },
+        "escalate": false
+      },
+      "result": {
+        "ticket_id": "T09",
+        "triage": {
+          "exception_types": [
+            "inventory_mismatch"
+          ],
+          "shipment_ids": [],
+          "order_ids": [],
+          "batch_ids": [],
+          "inventory_refs": [
+            {
+              "sku": "SKU-RICE-25",
+              "warehouse": "WH-DEL"
+            }
+          ],
+          "summary": "Physical count of SKU-RICE-25 at WH-DEL is 480 versus 500 in the system, a 20-unit discrepancy."
+        },
+        "route": "single",
+        "rule_route": "single",
+        "route_reasons": [
+          "one exception type, standard/internal customer, order below threshold"
+        ],
+        "root_causes": {
+          "inventory_mismatch": "damaged_not_written_off"
+        },
+        "findings": [
+          {
+            "exception_type": "inventory_mismatch",
+            "root_cause": "damaged_not_written_off",
+            "evidence": "Physical 480 vs system 500 (variance_units -20, variance_pct -4.0). Damage report DR-77 on 2026-10-07: 20 bags water-damaged, moved to damage bay; write-off pending approval, not yet posted. Last cycle count 2026-10-01 matched system at 500.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": false,
+          "escalation_team": "none",
+          "priority": "none",
+          "policy_rules_applied": [
+            "Policy rule 3: escalate to warehouse_ops only when abs(variance_pct) >= 5; variance_pct is -4.0, so no escalation.",
+            "Policy rule 2: damage report exists but write-off not posted -> damaged_not_written_off."
+          ],
+          "required_actions": [
+            "Complete the write-off approval for DR-77 (20 bags) so the system quantity is adjusted to 480."
+          ]
+        },
+        "communications": {
+          "customer_message": "",
+          "internal_note": "SKU-RICE-25 at WH-DEL: the 20-unit variance (-4.0%) is fully explained by damage report DR-77 (20 water-damaged bags in the damage bay). The write-off is still pending approval. Complete the approval to clear the variance. The variance is under the 5% threshold, so there is no escalation.",
+          "escalation_id": ""
+        },
+        "escalations_filed": 0,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 3,
+          "tool_calls": 2,
+          "tool_errors": 0,
+          "input_tokens": 6815,
+          "output_tokens": 1055,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 2.18,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 2,
+              "seconds": 5.8,
+              "tools": [
+                "get_inventory",
+                "lookup_policy"
+              ]
+            }
+          ],
+          "seconds": 7.98
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T10",
+      "expected": {
+        "exception_types": [
+          "failed_delivery"
+        ],
+        "route": "single",
+        "root_causes": {
+          "failed_delivery": "customer_unavailable"
+        },
+        "escalate": true
+      },
+      "result": {
+        "ticket_id": "T10",
+        "triage": {
+          "exception_types": [
+            "failed_delivery"
+          ],
+          "shipment_ids": [
+            "SH-2010"
+          ],
+          "order_ids": [],
+          "batch_ids": [],
+          "inventory_refs": [],
+          "summary": "Delhivery reports three failed delivery attempts for shipment SH-2010 because no one was present, and the customer wants it delivered."
+        },
+        "route": "single",
+        "rule_route": "single",
+        "route_reasons": [
+          "one exception type, standard/internal customer, order below threshold"
+        ],
+        "root_causes": {
+          "failed_delivery": "customer_unavailable"
+        },
+        "findings": [
+          {
+            "exception_type": "failed_delivery",
+            "root_cause": "customer_unavailable",
+            "evidence": "get_delivery_attempts: failed_attempts=3 (Oct 7 customer_unavailable 'No one at premises'; Oct 8 customer_unavailable 'Phone not answered'; Oct 9 premises_closed 'Shop shutter down during delivery window'); address_verified=true; temperature_controlled=false.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": true,
+          "escalation_team": "logistics",
+          "priority": "P2",
+          "policy_rules_applied": [
+            "ESCALATE to logistics when failed_attempts >= 3 (failed_attempts = 3).",
+            "Priority: P2 because the shipment is not temperature-controlled.",
+            "customer_unavailable -> book a confirmed delivery slot."
+          ],
+          "required_actions": [
+            "Book a confirmed delivery slot with Kiran Stores and Delhivery",
+            "Logistics to coordinate the reattempt (ESC-749FDC)"
+          ]
+        },
+        "communications": {
+          "customer_message": "Hello Kiran Stores, Delhivery made three delivery attempts for shipment SH-2010 (Oct 7, 8 and 9). On each attempt the premises were closed or no one could be reached. Your address is verified. We have passed this to our logistics team. They will contact you to book a confirmed delivery slot so someone is there to receive it. Please tell us a time window when your shop will be open and staffed.",
+          "internal_note": "SH-2010 had 3 failed attempts, all customer-side (nobody present, phone unanswered, shutter down). Address verified and the goods are not temperature-controlled. Escalated to logistics as P2 (ESC-749FDC) to book a confirmed slot. The shipment is 3 days past its promised date.",
+          "escalation_id": "ESC-749FDC"
+        },
+        "escalations_filed": 1,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 4,
+          "tool_calls": 4,
+          "tool_errors": 0,
+          "input_tokens": 12336,
+          "output_tokens": 1443,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 3.0,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 3,
+              "seconds": 10.24,
+              "tools": [
+                "get_shipment",
+                "get_delivery_attempts",
+                "lookup_policy",
+                "create_escalation"
+              ]
+            }
+          ],
+          "seconds": 13.24
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T11",
+      "expected": {
+        "exception_types": [
+          "failed_delivery"
+        ],
+        "route": "single",
+        "root_causes": {
+          "failed_delivery": "address_issue"
+        },
+        "escalate": false
+      },
+      "result": {
+        "ticket_id": "T11",
+        "triage": {
+          "exception_types": [
+            "failed_delivery"
+          ],
+          "shipment_ids": [
+            "SH-2011"
+          ],
+          "order_ids": [],
+          "batch_ids": [],
+          "inventory_refs": [],
+          "summary": "Nova Electronics reports delivery of shipment SH-2011 failed because the courier couldn't find their address."
+        },
+        "route": "single",
+        "rule_route": "single",
+        "route_reasons": [
+          "one exception type, standard/internal customer, order below threshold"
+        ],
+        "root_causes": {
+          "failed_delivery": "address_issue"
+        },
+        "findings": [
+          {
+            "exception_type": "failed_delivery",
+            "root_cause": "address_issue",
+            "evidence": "Attempt on 2026-10-08 failed with reason_code address_not_found, note 'Landmark incorrect, no building number'; address_verified=false; failed_attempts=1; temperature_controlled=false.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": false,
+          "escalation_team": "none",
+          "priority": "none",
+          "policy_rules_applied": [
+            "Escalate to logistics only when failed_attempts >= 3 or the shipment is temperature_controlled. Here failed_attempts=1 and temperature_controlled=false, so no escalation.",
+            "address_issue -> contact customer to verify address before the next attempt."
+          ],
+          "required_actions": [
+            "Contact Nova Electronics to verify the full delivery address (building number and correct landmark) before the next attempt.",
+            "Update the shipment address and arrange a re-attempt with Shadowfax once the address is verified."
+          ]
+        },
+        "communications": {
+          "customer_message": "Hello Nova Electronics, thank you for flagging this. The courier's delivery attempt for SH-2011 on 2026-10-08 failed because the address could not be located. The delivery note says the landmark was incorrect and there was no building number. Our address on file has not been verified. Please reply with your full delivery address, including the building number and an accurate landmark. We will update the shipment and arrange a new delivery attempt as soon as you confirm. We apologise for the inconvenience.",
+          "internal_note": "SH-2011 (ORD-3011, Shadowfax, BLR->Mysuru, standard tier, INR 25,000): 1 failed attempt on 10-08 for address_not_found; address unverified. The shipment is 1 day late. Below the escalation threshold, so no escalation. Next step: verify the address with the customer, then rebook the attempt.",
+          "escalation_id": ""
+        },
+        "escalations_filed": 0,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 3,
+          "tool_calls": 3,
+          "tool_errors": 0,
+          "input_tokens": 7836,
+          "output_tokens": 1203,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 1.88,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 2,
+              "seconds": 8.5,
+              "tools": [
+                "get_shipment",
+                "get_delivery_attempts",
+                "lookup_policy"
+              ]
+            }
+          ],
+          "seconds": 10.39
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T12",
+      "expected": {
+        "exception_types": [
+          "failed_delivery"
+        ],
+        "route": "single",
+        "root_causes": {
+          "failed_delivery": "receiver_refused"
+        },
+        "escalate": true
+      },
+      "result": {
+        "ticket_id": "T12",
+        "triage": {
+          "exception_types": [
+            "failed_delivery"
+          ],
+          "shipment_ids": [
+            "SH-2012"
+          ],
+          "order_ids": [],
+          "batch_ids": [],
+          "inventory_refs": [],
+          "summary": "Zest Foods reports frozen consignment SH-2012 came back undelivered yesterday and asks what happened."
+        },
+        "route": "single",
+        "rule_route": "single",
+        "route_reasons": [
+          "one exception type, standard/internal customer, order below threshold"
+        ],
+        "root_causes": {
+          "failed_delivery": "receiver_refused"
+        },
+        "findings": [
+          {
+            "exception_type": "failed_delivery",
+            "root_cause": "receiver_refused",
+            "evidence": "get_delivery_attempts: 1 failed attempt on 2026-10-09, reason_code receiver_refused, note 'Receiving dock full; receiver asked driver to come back next day'; address_verified true; temperature_controlled true. Shipment status returned_to_hub.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": true,
+          "escalation_team": "logistics",
+          "priority": "P1",
+          "policy_rules_applied": [
+            "Failed delivery policy rule 3: ESCALATE to logistics when failed_attempts >= 3 OR when the shipment is temperature_controlled (any failed attempt). Here failed_attempts = 1 and temperature_controlled = true, so escalate.",
+            "Rule 4: P1 for temperature-controlled shipments."
+          ],
+          "required_actions": [
+            "Agree a new delivery slot with the receiver (receiver_refused action)",
+            "Logistics to confirm cold-chain/temperature integrity of the returned frozen consignment",
+            "Update Zest Foods once a new slot is agreed"
+          ]
+        },
+        "communications": {
+          "customer_message": "Hello Zest Foods, thank you for flagging SH-2012. The ColdEx delivery attempt on 2026-10-09 was unsuccessful because the receiving dock was full and the driver was asked to come back the next day. The address was verified, so this was not an address problem. The consignment has been returned to the hub. Because it is frozen, we have escalated it as high priority to our logistics team. They will check the condition of the goods and agree a new delivery slot with your receiving team. We will confirm the slot with you as soon as it is agreed.",
+          "internal_note": "SH-2012 frozen, ColdEx, 1 failed attempt (receiver dock full) on 10-09, returned to hub. P1 escalated to logistics (ESC-127211) per temp-controlled rule. Need cold-chain integrity check and new slot with receiver. Note the shipment's scan events only show pickup on 10-08, with no events logged for the attempt or return.",
+          "escalation_id": "ESC-127211"
+        },
+        "escalations_filed": 1,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 4,
+          "tool_calls": 4,
+          "tool_errors": 0,
+          "input_tokens": 12196,
+          "output_tokens": 1570,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 2.06,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 3,
+              "seconds": 15.0,
+              "tools": [
+                "get_shipment",
+                "get_delivery_attempts",
+                "lookup_policy",
+                "create_escalation"
+              ]
+            }
+          ],
+          "seconds": 17.06
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T13",
+      "expected": {
+        "exception_types": [
+          "failed_delivery"
+        ],
+        "route": "multi",
+        "root_causes": {
+          "failed_delivery": "carrier_operational_failure"
+        },
+        "escalate": false
+      },
+      "result": {
+        "ticket_id": "T13",
+        "triage": {
+          "exception_types": [
+            "failed_delivery"
+          ],
+          "shipment_ids": [
+            "SH-2013"
+          ],
+          "order_ids": [],
+          "batch_ids": [],
+          "inventory_refs": [],
+          "summary": "Acme Retail reports that the delivery attempt for SH-2013 failed yesterday and the courier gave no reason."
+        },
+        "route": "single",
+        "rule_route": "multi",
+        "route_reasons": [
+          "key account (Acme Retail)"
+        ],
+        "root_causes": {
+          "failed_delivery": "carrier_operational_failure"
+        },
+        "findings": [
+          {
+            "exception_type": "failed_delivery",
+            "root_cause": "carrier_operational_failure",
+            "evidence": "Attempt on 2026-10-09 failed with reason_code carrier_issue, note 'Delivery vehicle breakdown en route'. failed_attempts=1, address_verified=true, temperature_controlled=false.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": false,
+          "escalation_team": "none",
+          "priority": "none",
+          "policy_rules_applied": [
+            "Escalate to logistics only when failed_attempts >= 3 or the shipment is temperature_controlled. Here failed_attempts=1 and temperature_controlled=false, so no escalation.",
+            "carrier_operational_failure -> carrier reattempt within 24h."
+          ],
+          "required_actions": [
+            "Request BlueDart to reattempt delivery of SH-2013 within 24h",
+            "Confirm the reattempt with Acme Retail"
+          ]
+        },
+        "communications": {
+          "customer_message": "Hello Acme Retail, thank you for flagging this. The delivery attempt for SH-2013 on 2026-10-09 did not succeed because the courier's delivery vehicle broke down on the way. This was a carrier-side problem, and your address is verified and was not the cause. We are asking the carrier to reattempt delivery within 24 hours, and we will update you once the reattempt is confirmed.",
+          "internal_note": "SH-2013 (ORD-3013, BlueDart, Pune->Mumbai, key account, INR 150000). One failed attempt due to vehicle breakdown. Not temperature-controlled and below the 3-attempt threshold, so no escalation. Follow up that BlueDart reattempts within 24h. If it fails again, re-evaluate against policy.",
+          "escalation_id": ""
+        },
+        "escalations_filed": 0,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 3,
+          "tool_calls": 3,
+          "tool_errors": 0,
+          "input_tokens": 7854,
+          "output_tokens": 1183,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 2.07,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 2,
+              "seconds": 7.08,
+              "tools": [
+                "get_shipment",
+                "get_delivery_attempts",
+                "lookup_policy"
+              ]
+            }
+          ],
+          "seconds": 9.16
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T14",
+      "expected": {
+        "exception_types": [
+          "quality_flag"
+        ],
+        "route": "multi",
+        "root_causes": {
+          "quality_flag": "supplier_defect"
+        },
+        "escalate": true
+      },
+      "result": {
+        "ticket_id": "T14",
+        "triage": {
+          "exception_types": [
+            "quality_flag"
+          ],
+          "shipment_ids": [
+            "SH-2014"
+          ],
+          "order_ids": [],
+          "batch_ids": [
+            "B-778"
+          ],
+          "inventory_refs": [],
+          "summary": "Bloom Pharma's receiving QC found broken seals on some pouches of sterile syringes in batch B-778, shipment SH-2014."
+        },
+        "route": "single",
+        "rule_route": "multi",
+        "route_reasons": [
+          "key account (Bloom Pharma)"
+        ],
+        "root_causes": {
+          "quality_flag": "supplier_defect"
+        },
+        "findings": [
+          {
+            "exception_type": "quality_flag",
+            "root_cause": "supplier_defect",
+            "evidence": "Inspection of B-778 (supplier MedPack): seal integrity failure on sterile pouches, 3 of 500 units defective, defect_rate_pct 0.6, severity critical. Defect found inside sealed supplier cartons; supplier certificate of analysis is missing the seal-strength test. Shipment SH-2014 was delivered on the promised date.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": true,
+          "escalation_team": "quality",
+          "priority": "P1",
+          "policy_rules_applied": [
+            "ESCALATE to the quality team when severity == 'critical' (any defect rate) OR defect_rate_pct >= 10. Severity is critical (defect_rate_pct 0.6).",
+            "Priority: P1 for critical severity.",
+            "Actions: critical -> quarantine the batch and notify the supplier; supplier_defect -> raise a supplier corrective action request (SCAR)."
+          ],
+          "required_actions": [
+            "Quarantine batch B-778",
+            "Notify supplier MedPack",
+            "Raise a supplier corrective action request (SCAR) with MedPack, including the missing seal-strength test on the certificate of analysis",
+            "Quality team to follow up with Bloom Pharma on the outcome"
+          ]
+        },
+        "communications": {
+          "customer_message": "Dear Bloom Pharma team, thank you for flagging the broken seals on batch B-778 (sterile syringes, shipment SH-2014). Our inspection confirmed a seal integrity failure on some sterile pouches. The defect was found inside the supplier's sealed cartons, so it appears to have originated before shipping. We have treated this as a critical, top-priority issue and escalated it to our quality team. The batch will be quarantined and the supplier notified, and a corrective action request will be raised with them. Please do not use the affected units. Our quality team will contact you with next steps. We apologise for the disruption.",
+          "internal_note": "T14: B-778 (MedPack) seal failure, 3/500 defective (0.6%), critical. Defect was inside sealed supplier cartons and the CoA lacks the seal-strength test, so supplier_defect. Shipment delivered on time, so this is not a carrier issue. Escalated to quality as P1 (ESC-27A66B). Key account Bloom Pharma.",
+          "escalation_id": "ESC-27A66B"
+        },
+        "escalations_filed": 1,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 4,
+          "tool_calls": 4,
+          "tool_errors": 0,
+          "input_tokens": 11842,
+          "output_tokens": 1654,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 2.09,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 3,
+              "seconds": 13.31,
+              "tools": [
+                "get_quality_inspection",
+                "get_shipment",
+                "lookup_policy",
+                "create_escalation"
+              ]
+            }
+          ],
+          "seconds": 15.4
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T15",
+      "expected": {
+        "exception_types": [
+          "quality_flag"
+        ],
+        "route": "single",
+        "root_causes": {
+          "quality_flag": "supplier_defect"
+        },
+        "escalate": true
+      },
+      "result": {
+        "ticket_id": "T15",
+        "triage": {
+          "exception_types": [
+            "quality_flag"
+          ],
+          "shipment_ids": [],
+          "order_ids": [],
+          "batch_ids": [
+            "B-779"
+          ],
+          "inventory_refs": [],
+          "summary": "Kiran Stores reports many storage boxes in batch B-779 are scratched, and says an inspection report is on file."
+        },
+        "route": "single",
+        "rule_route": "single",
+        "route_reasons": [
+          "one exception type, standard/internal customer, order below threshold"
+        ],
+        "root_causes": {
+          "quality_flag": "supplier_defect"
+        },
+        "findings": [
+          {
+            "exception_type": "quality_flag",
+            "root_cause": "supplier_defect",
+            "evidence": "B-779 (SH-2015, ShinePlast): 30 of 200 units defective, defect_rate_pct 15.0, severity minor, surface scratches. Inspector notes: scratches are under the supplier's protective film, so present before packing.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": true,
+          "escalation_team": "quality",
+          "priority": "P2",
+          "policy_rules_applied": [
+            "Escalate to quality when severity == 'critical' OR defect_rate_pct >= 10: defect_rate_pct is 15.0 (severity minor), so escalate.",
+            "Priority: P1 only for critical severity, otherwise P2: severity is minor, so P2.",
+            "supplier_defect -> raise a supplier corrective action request (SCAR)."
+          ],
+          "required_actions": [
+            "Raise a supplier corrective action request (SCAR) with ShinePlast",
+            "Quality team to review B-779 and decide disposition of the affected units",
+            "Update Kiran Stores once the quality team has decided next steps"
+          ]
+        },
+        "communications": {
+          "customer_message": "Dear Kiran Stores, thank you for flagging the scratched storage boxes in batch B-779. Our receiving inspection confirmed the issue: 30 of 200 inspected units (15.0%) have surface scratches. The scratches are under the supplier's protective film, so they were there before the goods were packed. We have escalated this to our quality team and will raise a corrective action request with the supplier. We will update you on the next steps for your affected units once the quality team has reviewed the batch. We apologise for the inconvenience.",
+          "internal_note": "B-779 / SH-2015 ShinePlast: 15.0% defect rate, minor scratches under supplier film, so a supplier defect. Escalated to quality as P2 (ESC-72FCEC). A SCAR is needed. No dates were promised to the customer.",
+          "escalation_id": "ESC-72FCEC"
+        },
+        "escalations_filed": 1,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 4,
+          "tool_calls": 3,
+          "tool_errors": 0,
+          "input_tokens": 11098,
+          "output_tokens": 1470,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 2.06,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 3,
+              "seconds": 9.26,
+              "tools": [
+                "get_quality_inspection",
+                "lookup_policy",
+                "create_escalation"
+              ]
+            }
+          ],
+          "seconds": 11.32
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T16",
+      "expected": {
+        "exception_types": [
+          "quality_flag"
+        ],
+        "route": "single",
+        "root_causes": {
+          "quality_flag": "damaged_in_transit"
+        },
+        "escalate": false
+      },
+      "result": {
+        "ticket_id": "T16",
+        "triage": {
+          "exception_types": [
+            "quality_flag"
+          ],
+          "shipment_ids": [
+            "SH-2016"
+          ],
+          "order_ids": [],
+          "batch_ids": [
+            "B-780"
+          ],
+          "inventory_refs": [],
+          "summary": "Nova Electronics received shipment SH-2016 (batch B-780) with several crushed cartons and bent wall mounts."
+        },
+        "route": "single",
+        "rule_route": "single",
+        "route_reasons": [
+          "one exception type, standard/internal customer, order below threshold"
+        ],
+        "root_causes": {
+          "quality_flag": "damaged_in_transit"
+        },
+        "findings": [
+          {
+            "exception_type": "quality_flag",
+            "root_cause": "damaged_in_transit",
+            "evidence": "B-780 inspection: 4 of 100 units defective (defect_rate_pct 4.0), severity major. Notes: origin QC photos show intact cartons at dispatch; corner-crush pattern consistent with transit handling. Shipment SH-2016 carried by Ecom Express, delivered 2026-10-08.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": false,
+          "escalation_team": "none",
+          "priority": "none",
+          "policy_rules_applied": [
+            "Escalate only if severity == 'critical' or defect_rate_pct >= 10. Here severity is 'major' and defect_rate_pct is 4.0, so no escalation.",
+            "damaged_in_transit -> raise a carrier damage claim."
+          ],
+          "required_actions": [
+            "Raise a carrier damage claim against Ecom Express for SH-2016 (batch B-780)",
+            "Arrange replacement/remedy for the damaged units with the customer",
+            "Keep origin QC photos as claim evidence"
+          ]
+        },
+        "communications": {
+          "customer_message": "Dear Nova Electronics, thank you for reporting the crushed cartons and bent wall mounts in shipment SH-2016 (batch B-780). Our inspection found 4 of 100 inspected units affected. Our origin quality photos show the cartons were intact when they left us, and the damage pattern points to handling in transit. We are raising a damage claim with the carrier. Our team will follow up with you on the remedy for the affected units.",
+          "internal_note": "B-780 (MountCo TV wall mounts): 4% defect, major severity, damage in transit per origin QC photos. Below escalation thresholds. File carrier damage claim with Ecom Express; no SCAR needed for the supplier.",
+          "escalation_id": ""
+        },
+        "escalations_filed": 0,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 3,
+          "tool_calls": 3,
+          "tool_errors": 0,
+          "input_tokens": 7616,
+          "output_tokens": 1200,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 2.67,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 2,
+              "seconds": 7.56,
+              "tools": [
+                "get_quality_inspection",
+                "get_shipment",
+                "lookup_policy"
+              ]
+            }
+          ],
+          "seconds": 10.24
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T17",
+      "expected": {
+        "exception_types": [
+          "quality_flag"
+        ],
+        "route": "single",
+        "root_causes": {
+          "quality_flag": "supplier_defect"
+        },
+        "escalate": false
+      },
+      "result": {
+        "ticket_id": "T17",
+        "triage": {
+          "exception_types": [
+            "quality_flag"
+          ],
+          "shipment_ids": [],
+          "order_ids": [],
+          "batch_ids": [
+            "B-781"
+          ],
+          "inventory_refs": [],
+          "summary": "Zest Foods reports a couple of jars in batch B-781 arrived with chipped lids."
+        },
+        "route": "single",
+        "rule_route": "single",
+        "route_reasons": [
+          "one exception type, standard/internal customer, order below threshold"
+        ],
+        "root_causes": {
+          "quality_flag": "supplier_defect"
+        },
+        "findings": [
+          {
+            "exception_type": "quality_flag",
+            "root_cause": "supplier_defect",
+            "evidence": "B-781 (Glass jar 500ml, supplier ClearGlass, shipment SH-2017): 2 of 250 inspected units defective, defect_rate_pct 0.8, severity minor. Inspector notes: chips on lid moulding seams; manufacturing flaw.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": false,
+          "escalation_team": "none",
+          "priority": "none",
+          "policy_rules_applied": [
+            "Escalate only when severity == 'critical' OR defect_rate_pct >= 10. B-781 severity is minor and defect_rate_pct is 0.8, so no escalation.",
+            "Root cause supplier_defect (manufacturing flaw on lid moulding seams) -> raise a supplier corrective action request (SCAR)."
+          ],
+          "required_actions": [
+            "Raise a supplier corrective action request (SCAR) with ClearGlass for chipped lids on lid moulding seams in batch B-781",
+            "Log the defect against batch B-781 / shipment SH-2017"
+          ]
+        },
+        "communications": {
+          "customer_message": "Hello Zest Foods, thank you for letting us know about the chipped lids in batch B-781. Our receiving inspection also found the issue: 2 of 250 inspected units, a minor defect caused by a manufacturing flaw at the supplier. We are raising a corrective action request with the supplier. If you would like us to look at the affected jars, please send us the details and we will follow up.",
+          "internal_note": "B-781 minor quality flag, 0.8% defect rate (2/250), supplier ClearGlass, manufacturing flaw on lid seams. Below escalation thresholds, so no escalation. Action: raise a SCAR.",
+          "escalation_id": ""
+        },
+        "escalations_filed": 0,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 3,
+          "tool_calls": 2,
+          "tool_errors": 0,
+          "input_tokens": 7224,
+          "output_tokens": 1086,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 1.88,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 2,
+              "seconds": 6.59,
+              "tools": [
+                "get_quality_inspection",
+                "lookup_policy"
+              ]
+            }
+          ],
+          "seconds": 8.47
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T18",
+      "expected": {
+        "exception_types": [
+          "late_shipment",
+          "quality_flag"
+        ],
+        "route": "multi",
+        "root_causes": {
+          "late_shipment": "carrier_delay",
+          "quality_flag": "damaged_in_transit"
+        },
+        "escalate": true
+      },
+      "result": {
+        "ticket_id": "T18",
+        "triage": {
+          "exception_types": [
+            "late_shipment",
+            "quality_flag"
+          ],
+          "shipment_ids": [
+            "SH-2018"
+          ],
+          "order_ids": [],
+          "batch_ids": [
+            "B-782"
+          ],
+          "inventory_refs": [],
+          "summary": "Acme Retail reports shipment SH-2018 arrived 3 days late and almost half the cartons from batch B-782 were crushed."
+        },
+        "route": "single",
+        "rule_route": "multi",
+        "route_reasons": [
+          "2 exception types (late_shipment, quality_flag)",
+          "key account (Acme Retail)"
+        ],
+        "root_causes": {
+          "late_shipment": "carrier_delay",
+          "quality_flag": "damaged_in_transit"
+        },
+        "findings": [
+          {
+            "exception_type": "late_shipment",
+            "root_cause": "carrier_delay",
+            "evidence": "SH-2018 days_late=3 (promised 2026-10-05, delivered 2026-10-08). Held at Indore hub 2026-10-03 to 2026-10-06. Ecom Express has no declared disruptions; 30-day on-time rate 0.62. Picked up at WH-AMD on 2026-10-02, so it left our warehouse.",
+            "confidence": "high"
+          },
+          {
+            "exception_type": "quality_flag",
+            "root_cause": "damaged_in_transit",
+            "evidence": "B-782: 18 of 40 units crushed, defect_rate_pct 45.0, severity major. Inspector notes: origin QC passed with photos; crush damage consistent with stacking during transit.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": true,
+          "escalation_team": "logistics",
+          "priority": "P1",
+          "policy_rules_applied": [
+            "Late shipment rule 3: escalate to logistics when days_late >= 3 AND key account; days_late=3 and Acme Retail is key_account.",
+            "Late shipment rule 4: P1 for key accounts.",
+            "Quality flag rule 3: escalate to quality when defect_rate_pct >= 10; defect_rate_pct=45.0 (severity major, so P2 per rule 4)."
+          ],
+          "required_actions": [
+            "Open a carrier trace with Ecom Express for SH-2018 (logistics, ESC-27BF4D)",
+            "Waive freight charges for SH-2018 (key account, days_late >= 3)",
+            "Raise a carrier damage claim against Ecom Express for batch B-782 (quality, ESC-5E3FAB)"
+          ]
+        },
+        "communications": {
+          "customer_message": "Dear Acme Retail, we're sorry that SH-2018 reached you 3 days after its promised date and that many of the cartons in batch B-782 were crushed. Our review found that the shipment was held at a carrier hub in transit. Our inspection recorded 18 of 40 inspected units with crush damage, and the cartons passed quality checks before dispatch. We have escalated both issues to our logistics and quality teams as priority. We are opening a trace with the carrier, raising a damage claim for the crushed cartons, and waiving the freight charges for this shipment. We will update you as these progress.",
+          "internal_note": "Two escalations filed because both policies triggered: logistics P1 ESC-27BF4D (late, key account, days_late=3) and quality P2 ESC-5E3FAB (defect 45.0%, major). The submit schema takes one escalation ID, so the primary (logistics) is recorded here and the quality one is in this note. Both root causes sit with carrier Ecom Express: carrier_delay with no declared disruption, and damaged_in_transit.",
+          "escalation_id": "ESC-27BF4D"
+        },
+        "escalations_filed": 2,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 5,
+          "tool_calls": 7,
+          "tool_errors": 0,
+          "input_tokens": 19203,
+          "output_tokens": 2399,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 2.02,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 4,
+              "seconds": 18.23,
+              "tools": [
+                "get_shipment",
+                "get_quality_inspection",
+                "lookup_policy",
+                "lookup_policy",
+                "get_carrier_status",
+                "create_escalation",
+                "create_escalation"
+              ]
+            }
+          ],
+          "seconds": 20.25
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T19",
+      "expected": {
+        "exception_types": [
+          "failed_delivery",
+          "inventory_mismatch"
+        ],
+        "route": "multi",
+        "root_causes": {
+          "failed_delivery": "address_issue",
+          "inventory_mismatch": "duplicate_posting"
+        },
+        "escalate": true
+      },
+      "result": {
+        "ticket_id": "T19",
+        "triage": {
+          "exception_types": [
+            "failed_delivery",
+            "inventory_mismatch"
+          ],
+          "shipment_ids": [
+            "SH-2019"
+          ],
+          "order_ids": [],
+          "batch_ids": [],
+          "inventory_refs": [
+            {
+              "sku": "SKU-LED-40",
+              "warehouse": "WH-PUNE"
+            }
+          ],
+          "summary": "Delivery of SH-2019 failed twice because the courier couldn't find the customer, and the stock count for SKU-LED-40 at WH-PUNE doesn't match, which blocks sending a replacement."
+        },
+        "route": "single",
+        "rule_route": "multi",
+        "route_reasons": [
+          "2 exception types (failed_delivery, inventory_mismatch)"
+        ],
+        "root_causes": {
+          "failed_delivery": "address_issue",
+          "inventory_mismatch": "duplicate_posting"
+        },
+        "findings": [
+          {
+            "exception_type": "failed_delivery",
+            "root_cause": "address_issue",
+            "evidence": "2 failed attempts (2026-10-07, 2026-10-08), both reason_code address_not_found; address_verified=false; not temperature-controlled.",
+            "confidence": "high"
+          },
+          {
+            "exception_type": "inventory_mismatch",
+            "root_cause": "duplicate_posting",
+            "evidence": "System 200 vs physical 188, variance -12 units (-6.0%). GRN-551 posted twice on 2026-10-03 (12 units each); dock log says one pallet, 12 units received.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": true,
+          "escalation_team": "warehouse_ops",
+          "priority": "P2",
+          "policy_rules_applied": [
+            "Failed delivery policy v4 rule 3: escalate only when failed_attempts >= 3 or temperature-controlled; SH-2019 has 2 failed attempts and is not temperature-controlled -> no escalation.",
+            "Inventory mismatch policy v2 rule 3: escalate to warehouse_ops when abs(variance_pct) >= 5; variance_pct is -6.0 -> escalate. Rule 4: P2 since cause is not theft/loss."
+          ],
+          "required_actions": [
+            "Contact the customer to verify the delivery address for SH-2019 before the next attempt.",
+            "Warehouse ops to reverse the duplicate GRN-551 entry at WH-PUNE for SKU-LED-40 and correct system stock."
+          ]
+        },
+        "communications": {
+          "customer_message": "Hello Nova Electronics, thank you for flagging this. Shadowfax made two delivery attempts on SH-2019 and could not locate the building at the address we have, and the address is not yet verified. Please reply with the full, confirmed delivery address, a landmark and a contact number that will be reachable. We will use it to arrange the next delivery attempt. On the replacement LED panels (SKU-LED-40), we found the stock discrepancy at WH-PUNE. It comes from a duplicate receipt entry in our system. We have passed it to our warehouse operations team to correct. We will update you on next steps once the address is confirmed and the stock record is corrected.",
+          "internal_note": "SH-2019: 2 failed attempts, address_not_found, address unverified -> no escalation (needs >=3 or temp-controlled). Shipment is 2 days late. Inventory: duplicate GRN-551 posting, -6.0% variance -> escalated to warehouse_ops P2 (ESC-FBDA58).",
+          "escalation_id": "ESC-FBDA58"
+        },
+        "escalations_filed": 1,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 4,
+          "tool_calls": 6,
+          "tool_errors": 0,
+          "input_tokens": 14938,
+          "output_tokens": 1931,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 2.44,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 3,
+              "seconds": 11.29,
+              "tools": [
+                "get_shipment",
+                "get_delivery_attempts",
+                "get_inventory",
+                "lookup_policy",
+                "lookup_policy",
+                "create_escalation"
+              ]
+            }
+          ],
+          "seconds": 13.73
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    },
+    {
+      "ticket_id": "T20",
+      "expected": {
+        "exception_types": [
+          "late_shipment"
+        ],
+        "route": "single",
+        "root_causes": {
+          "late_shipment": "carrier_hub_disruption"
+        },
+        "escalate": false
+      },
+      "result": {
+        "ticket_id": "T20",
+        "triage": {
+          "exception_types": [
+            "late_shipment"
+          ],
+          "shipment_ids": [],
+          "order_ids": [
+            "ORD-3020"
+          ],
+          "batch_ids": [],
+          "inventory_refs": [],
+          "summary": "Zest Foods reports order ORD-3020, due on the 8th, has not arrived and is overdue."
+        },
+        "route": "single",
+        "rule_route": "single",
+        "route_reasons": [
+          "one exception type, standard/internal customer, order below threshold"
+        ],
+        "root_causes": {
+          "late_shipment": "carrier_hub_disruption"
+        },
+        "findings": [
+          {
+            "exception_type": "late_shipment",
+            "root_cause": "carrier_hub_disruption",
+            "evidence": "SH-2020 (TCI Express, Chennai to Coimbatore) days_late=2; last event 2026-10-06 at Chennai hub 'Held: linehaul suspended'. TCI Express has a declared disruption at Chennai hub 2026-10-06 to 2026-10-10: 'Cyclone advisory; all linehaul suspended'.",
+            "confidence": "high"
+          }
+        ],
+        "decision": {
+          "escalate": false,
+          "escalation_team": "none",
+          "priority": "none",
+          "policy_rules_applied": [
+            "Rule 3: escalate to logistics only when (days_late >= 3 AND key account) OR days_late >= 7. Here days_late=2 and customer tier is standard, so no escalation.",
+            "Rule 5: carrier delay or disruption -> open a carrier trace. Freight waiver applies only to key accounts with days_late >= 3, so not applicable."
+          ],
+          "required_actions": [
+            "Open a carrier trace with TCI Express for SH-2020 (held at Chennai hub)",
+            "Monitor the Chennai hub disruption and shipment status, and update the customer when the shipment moves",
+            "Re-check days_late; escalate to logistics if it reaches the policy threshold (>=7 days for any customer)"
+          ]
+        },
+        "communications": {
+          "customer_message": "Hello Zest Foods, thank you for flagging order ORD-3020. You're right that it is late. It was promised for 8 October and is now 2 days overdue. The shipment is with TCI Express and has been held at their Chennai hub since 6 October. The carrier has declared a disruption there, with all linehaul suspended because of a cyclone advisory. The delay is not caused by an address problem. We are opening a trace with the carrier and will monitor the shipment. We'll update you as soon as it moves. We don't yet have a confirmed new delivery date, and we'll share one once the carrier provides it. We apologise for the inconvenience.",
+          "internal_note": "T20: SH-2020 is 2 days late and stuck at Chennai hub because of TCI Express's declared cyclone disruption (10-06 to 10-10). The customer is standard tier and days_late is 2, so the policy does not call for escalation. Open a carrier trace and keep monitoring. Re-evaluate if days_late reaches 7.",
+          "escalation_id": ""
+        },
+        "escalations_filed": 0,
+        "escalation_consistent": true,
+        "stats": {
+          "api_calls": 5,
+          "tool_calls": 4,
+          "tool_errors": 0,
+          "input_tokens": 15268,
+          "output_tokens": 1451,
+          "forced_submits": 0,
+          "agents": [
+            {
+              "agent": "triage",
+              "api_calls": 1,
+              "seconds": 2.03,
+              "tools": []
+            },
+            {
+              "agent": "resolver",
+              "api_calls": 4,
+              "seconds": 10.69,
+              "tools": [
+                "get_order",
+                "lookup_policy",
+                "get_shipment",
+                "get_carrier_status"
+              ]
+            }
+          ],
+          "seconds": 12.72
+        }
+      },
+      "score": {
+        "types": true,
+        "route": null,
+        "root_cause": 1.0,
+        "escalate": true,
+        "consistent": true,
+        "all_correct": true
+      }
+    }
+  ]
+}

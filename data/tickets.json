@@ -1,0 +1,81 @@
+[
+  {"id": "T01", "customer_id": "CUST-NOVA", "source": "email",
+   "text": "Hi, our shipment SH-2001 was supposed to arrive on Oct 5 and we still don't have it. Tracking hasn't moved in days. Can you check what's going on?",
+   "expected": {"exception_types": ["late_shipment"], "route": "single", "root_causes": {"late_shipment": "carrier_hub_disruption"}, "escalate": false}},
+
+  {"id": "T02", "customer_id": "CUST-ACME", "source": "email",
+   "text": "URGENT: SH-2002 for our Hyderabad store still shows 'awaiting pickup'. It was promised for the 6th. This is the third delay this quarter.",
+   "expected": {"exception_types": ["late_shipment"], "route": "multi", "root_causes": {"late_shipment": "warehouse_dispatch_delay"}, "escalate": true}},
+
+  {"id": "T03", "customer_id": "CUST-KIRAN", "source": "chat",
+   "text": "Is SH-2003 going to be late? Tracking says it's sitting in Jaipur.",
+   "expected": {"exception_types": ["late_shipment"], "route": "single", "root_causes": {"late_shipment": "not_late"}, "escalate": false}},
+
+  {"id": "T04", "customer_id": "CUST-ZEST", "source": "email",
+   "text": "SH-2004 was due on 2nd Oct. It's been more than a week. Ecom Express isn't responding to us.",
+   "expected": {"exception_types": ["late_shipment"], "route": "single", "root_causes": {"late_shipment": "carrier_delay"}, "escalate": true}},
+
+  {"id": "T05", "customer_id": "CUST-NOVA", "source": "email",
+   "text": "Checking on SH-2005, it's 2 days past the promised date. It's our big festive-season order so please keep an eye on it.",
+   "expected": {"exception_types": ["late_shipment"], "route": "multi", "root_causes": {"late_shipment": "carrier_hub_disruption"}, "escalate": false}},
+
+  {"id": "T06", "customer_id": null, "source": "warehouse_ops",
+   "text": "Cycle count at WH-PUNE: SKU-LED-40 physical count is 188 but the system shows 200. Please investigate.",
+   "expected": {"exception_types": ["inventory_mismatch"], "route": "single", "root_causes": {"inventory_mismatch": "duplicate_posting"}, "escalate": true}},
+
+  {"id": "T07", "customer_id": null, "source": "warehouse_ops",
+   "text": "WH-DEL cycle count variance on SKU-CBL-USB: we counted 990, system says 1000.",
+   "expected": {"exception_types": ["inventory_mismatch"], "route": "single", "root_causes": {"inventory_mismatch": "unrecorded_pick"}, "escalate": false}},
+
+  {"id": "T08", "customer_id": null, "source": "warehouse_ops",
+   "text": "SKU-PHN-12 at WH-BLR is short by 6 units vs system. The cage was counted clean on Oct 1.",
+   "expected": {"exception_types": ["inventory_mismatch"], "route": "single", "root_causes": {"inventory_mismatch": "theft_or_loss_suspected"}, "escalate": true}},
+
+  {"id": "T09", "customer_id": null, "source": "warehouse_ops",
+   "text": "WH-DEL: SKU-RICE-25 count is 480, system 500.",
+   "expected": {"exception_types": ["inventory_mismatch"], "route": "single", "root_causes": {"inventory_mismatch": "damaged_not_written_off"}, "escalate": false}},
+
+  {"id": "T10", "customer_id": "CUST-KIRAN", "source": "phone",
+   "text": "Delhivery says they've tried delivering SH-2010 three times and nobody was there. We need this delivered.",
+   "expected": {"exception_types": ["failed_delivery"], "route": "single", "root_causes": {"failed_delivery": "customer_unavailable"}, "escalate": true}},
+
+  {"id": "T11", "customer_id": "CUST-NOVA", "source": "email",
+   "text": "Delivery for SH-2011 failed. The courier says they couldn't find our address.",
+   "expected": {"exception_types": ["failed_delivery"], "route": "single", "root_causes": {"failed_delivery": "address_issue"}, "escalate": false}},
+
+  {"id": "T12", "customer_id": "CUST-ZEST", "source": "email",
+   "text": "Our frozen consignment SH-2012 came back undelivered yesterday. What happened?",
+   "expected": {"exception_types": ["failed_delivery"], "route": "single", "root_causes": {"failed_delivery": "receiver_refused"}, "escalate": true}},
+
+  {"id": "T13", "customer_id": "CUST-ACME", "source": "chat",
+   "text": "The delivery attempt for SH-2013 failed yesterday. The courier gave us no reason.",
+   "expected": {"exception_types": ["failed_delivery"], "route": "multi", "root_causes": {"failed_delivery": "carrier_operational_failure"}, "escalate": false}},
+
+  {"id": "T14", "customer_id": "CUST-BLOOM", "source": "email",
+   "text": "Our receiving QC flagged batch B-778 (sterile syringes, shipment SH-2014). Some pouches have broken seals.",
+   "expected": {"exception_types": ["quality_flag"], "route": "multi", "root_causes": {"quality_flag": "supplier_defect"}, "escalate": true}},
+
+  {"id": "T15", "customer_id": "CUST-KIRAN", "source": "email",
+   "text": "A lot of the storage boxes in batch B-779 are scratched. The inspection report is in your system.",
+   "expected": {"exception_types": ["quality_flag"], "route": "single", "root_causes": {"quality_flag": "supplier_defect"}, "escalate": true}},
+
+  {"id": "T16", "customer_id": "CUST-NOVA", "source": "email",
+   "text": "Received SH-2016 with several crushed cartons and a few bent wall mounts. Batch B-780.",
+   "expected": {"exception_types": ["quality_flag"], "route": "single", "root_causes": {"quality_flag": "damaged_in_transit"}, "escalate": false}},
+
+  {"id": "T17", "customer_id": "CUST-ZEST", "source": "chat",
+   "text": "A couple of jars in batch B-781 had chipped lids. FYI.",
+   "expected": {"exception_types": ["quality_flag"], "route": "single", "root_causes": {"quality_flag": "supplier_defect"}, "escalate": false}},
+
+  {"id": "T18", "customer_id": "CUST-ACME", "source": "email",
+   "text": "SH-2018 arrived 3 days late AND almost half the cartons were crushed (batch B-782). This is not acceptable.",
+   "expected": {"exception_types": ["late_shipment", "quality_flag"], "route": "multi", "root_causes": {"late_shipment": "carrier_delay", "quality_flag": "damaged_in_transit"}, "escalate": true}},
+
+  {"id": "T19", "customer_id": "CUST-NOVA", "source": "email",
+   "text": "SH-2019 delivery failed twice, the courier can't find us. Also, your team says the stock count at WH-PUNE for the replacement LED panels (SKU-LED-40) doesn't match, so we can't even get a replacement.",
+   "expected": {"exception_types": ["failed_delivery", "inventory_mismatch"], "route": "multi", "root_causes": {"failed_delivery": "address_issue", "inventory_mismatch": "duplicate_posting"}, "escalate": true}},
+
+  {"id": "T20", "customer_id": "CUST-ZEST", "source": "email",
+   "text": "Order ORD-3020 hasn't arrived. It was due on the 8th.",
+   "expected": {"exception_types": ["late_shipment"], "route": "single", "root_causes": {"late_shipment": "carrier_hub_disruption"}, "escalate": false}}
+]
